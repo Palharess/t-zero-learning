@@ -1,0 +1,59 @@
+[
+  {
+    "title": "Q1 · Frequência da target network",
+    "prediction": "Sincronizar a cada passo deve aumentar o acoplamento do bootstrap e a instabilidade de Q e retorno. Um alvo atualizado a cada 10.000 passos deve variar menos, mas propagar os valores mais lentamente.",
+    "sweep": "Frequências 1, 500 (baseline) e 10.000; duas seeds por valor. Reporto retorno, TD loss e Q médio para distinguir desempenho, ajuste ao alvo e escala dos valores.",
+    "names": [
+      "target-1",
+      "baseline",
+      "target-10000"
+    ],
+    "labels": [
+      "Frequência 1",
+      "Frequência 500",
+      "Frequência 10.000"
+    ],
+    "explanation": [
+      "<b>Explicação.</b> A previsão de instabilidade com frequência 1 se confirmou durante o treino, mas não como perda final: ambas as seeds avaliaram em 500. O gráfico de Q apresenta picos brutos de 1.472 e 1.129, muito acima do limite de retorno descontado 1/(1−0,99) = 100, pois a recompensa por passo é 1. O bootstrap com máximo reutiliza estimativas superestimadas e o alvo acompanha a rede online, favorecendo realimentação; o gráfico de retorno mostra oscilações e recuperação. A sincronização periódica reduz esse acoplamento.",
+      "Com frequência 10.000, Q termina em apenas 36,6 e 37,4, e o retorno fica abaixo do baseline, confirmando a previsão de aprendizado mais lento. O TD loss final é só 0,0067 e 0,048: a rede ajustou bem um alvo ainda defasado. A loss mede erro no minibatch contra esse alvo, não a qualidade da política nem o erro contra o Q verdadeiro; por isso pode parecer boa mesmo quando o retorno é baixo ou degrada."
+    ]
+  },
+  {
+    "title": "Q2 · Tamanho do replay buffer",
+    "prediction": "Um buffer de 128 deve reduzir a diversidade e esquecer rapidamente experiências antigas, causando instabilidade. Um buffer de 100.000 preserva mais situações, mas pode retardar a adaptação por conservar dados de políticas antigas.",
+    "sweep": "Capacidades 128, 10.000 (baseline) e 100.000; duas seeds por valor. Reporto retorno e Q para observar o efeito na política e nas estimativas, mantendo batch size 128.",
+    "names": [
+      "buffer-128",
+      "baseline",
+      "buffer-100000"
+    ],
+    "labels": [
+      "Buffer 128",
+      "Buffer 10.000",
+      "Buffer 100.000"
+    ],
+    "explanation": [
+      "<b>Explicação.</b> O gráfico de retorno do buffer 128 mostra forte instabilidade na seed 2: após chegar perto de 500, cai quase a 40 por volta de 310 mil passos, recupera e volta a cair no fim. A avaliação termina em 270,5, contra 500 na seed 1. O gráfico de Q também oscila e termina em 61,0 versus 115,3. A previsão de fragilidade se confirmou, sem significar que todo treino com buffer pequeno fracassa.",
+      "Há dois mecanismos distintos. Primeiro, as transições disponíveis vêm de uma janela temporal curta: estados próximos e repetições com reposição tornam o minibatch pouco diverso, mesmo com índices uniformes. Segundo, o FIFO elimina rapidamente experiências de episódios e políticas anteriores; a rede deixa de rever situações já aprendidas e pode esquecer como agir nelas. O buffer 100.000 conserva essas experiências, mas não foi melhor que o baseline: a curva de retorno sobe mais devagar e Q atinge picos próximos de 400, contra cerca de 230 no baseline. Isso é compatível com a maior presença de dados antigos e mostra que buffer grande não elimina superestimação; apesar disso, ambas as avaliações finais atingem 500."
+    ]
+  },
+  {
+    "title": "Q3 · Taxa de aprendizado (extra)",
+    "prediction": "Uma taxa dez vezes menor deve reduzir a magnitude das atualizações, mas aprender mais devagar. Uma taxa dez vezes maior pode gerar picos de TD loss e instabilidade de Q, prejudicando o retorno.",
+    "sweep": "Taxas 0,000025, 0,00025 (baseline) e 0,0025; duas seeds por valor. Escolhi retorno para medir desempenho, TD loss para acompanhar o ajuste e Q para detectar superestimação; juntos distinguem lentidão e instabilidade.",
+    "names": [
+      "lr-small",
+      "baseline",
+      "lr-large"
+    ],
+    "labels": [
+      "LR 0,000025",
+      "LR 0,00025",
+      "LR 0,0025"
+    ],
+    "explanation": [
+      "<b>Explicação.</b> A taxa 0,000025 termina com retorno greedy de 182,4 e 158,6, abaixo de 500 no baseline, confirmando a previsão de aprendizado lento no orçamento fixo. O gráfico de Q mostra valores finais de 71,5 e 53,6, e o retorno ainda oscila: passos menores do otimizador não garantem uma política estável. Como o alvo também muda, a rede pode continuar mal ajustada mesmo com atualizações pequenas.",
+      "Com taxa 0,0025, o gráfico de Q revela superestimação mais forte: picos brutos de cerca de 377 e 564, contra 227 e 237 no baseline. O gráfico de TD loss também mostra picos maiores, e a curva de retorno apresenta quedas após melhora. Atualizações grandes alteram rapidamente os valores, que alimentam os próximos alvos de bootstrap; o erro pode ser amplificado. A avaliação final foi 500 na seed 1 e 125,5 na seed 2: a previsão de instabilidade se confirmou, e o prejuízo final ocorreu em uma das duas execuções. Q superestimado pode coexistir com retorno 500, pois a política depende da ordem das ações, não da escala absoluta. As três curvas e a avaliação final são necessárias para interpretar o resultado."
+    ]
+  }
+]

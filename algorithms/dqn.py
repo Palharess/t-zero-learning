@@ -123,7 +123,13 @@ class ReplayBuffer:
 
         """
         # ==================== YOUR CODE HERE (Part 1a) ====================
-        raise NotImplementedError("Implement ReplayBuffer.add")
+        self.observations[self.pos] = obs
+        self.next_observations[self.pos] = next_obs
+        self.actions[self.pos] = action
+        self.rewards[self.pos] = reward
+        self.dones[self.pos] = done
+        self.pos = (self.pos + 1) % self.capacity
+        self.size = min(self.size + 1, self.capacity)
         # ==================================================================
 
     def sample(self, batch_size: int) -> Batch:
@@ -135,7 +141,11 @@ class ReplayBuffer:
 
         """
         # ==================== YOUR CODE HERE (Part 1b) ====================
-        raise NotImplementedError("Implement ReplayBuffer.sample")
+        indices = np.random.randint(0, self.size, size=batch_size)
+        return Batch(*(torch.as_tensor(values[indices], device=self.device)
+                       for values in (self.observations, self.actions,
+                                      self.next_observations, self.rewards,
+                                      self.dones)))
         # ==================================================================
 
 
@@ -144,7 +154,10 @@ def compute_td_targets(target_network, batch: Batch, gamma: float) -> torch.Tens
 
     """
     # ===================== YOUR CODE HERE (Part 2) =====================
-    raise NotImplementedError("Implement compute_td_targets")
+    with torch.no_grad():
+        next_values = target_network(batch.next_observations).max(dim=1).values
+        return (batch.rewards.flatten()
+                + gamma * (1.0 - batch.dones.flatten()) * next_values)
     # ===================================================================
 
 

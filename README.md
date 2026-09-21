@@ -8,6 +8,16 @@ meant as the *time step zero* of your RL project: a working, tested foundation
 where developers, researchers, and students apply RL to **new environments,
 experiments, and algorithms**. Our goal is to give full control over, and clear visibility into everything that happens. Nothing is hidden behind a convenient function call.
 
+## Atividade DQN — Gabriel Palhares Siqueira
+
+Implementação individual dos três blocos em [algorithms/dqn.py](algorithms/dqn.py),
+com 7 testes de DQN aprovados e 14 treinos de CartPole (500.000 passos por treino).
+
+- [Relatório em PDF, 3 páginas](reports/Relatorio_DQN_Gabriel_Palhares_Siqueira.pdf)
+- [Previsões, protocolo e reprodução](EXPERIMENTOS.md)
+- [Resultados numéricos](reports/results-summary.json)
+- [Gráficos e runs no W&B](https://wandb.ai/palhares-federal-university-of-goi-s/dqn-assignment/reports/DQN-CartPole---Gabriel-Palhares-Siqueira--VmlldzoxNzk3NzE5MA==)
+
 ## Built on CleanRL
 
 The algorithms are taken directly from **CleanRL**
