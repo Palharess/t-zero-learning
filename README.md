@@ -8,6 +8,19 @@ meant as the *time step zero* of your RL project: a working, tested foundation
 where developers, researchers, and students apply RL to **new environments,
 experiments, and algorithms**. Our goal is to give full control over, and clear visibility into everything that happens. Nothing is hidden behind a convenient function call.
 
+## Atividade A2C — Gabriel Palhares Siqueira
+
+Implementação individual das Partes 1–3 do A2C: retorno de n passos e perda do
+gradiente de política em [algorithms/a2c.py](algorithms/a2c.py) e o ator-crítico
+categórico em [networks/discrete_actor_critic.py](networks/discrete_actor_critic.py),
+com os 14 testes de `tests/test_a2c.py` aprovados; treinos no CartPole-v1 (Q1–Q4,
+duas seeds por configuração) e no LunarLander-v3 (Extra).
+
+- [Relatório em PDF, 3 páginas](reports/a2c/Relatorio_A2C_Gabriel_Palhares_Siqueira.pdf)
+- [Previsões, protocolo e reprodução](EXPERIMENTOS_A2C.md)
+- [Resultados numéricos](reports/a2c/results-summary.json) · [checagem dos críticos (Q2)](reports/a2c/critic-check.json)
+- [Gráficos e runs no W&B](https://wandb.ai/palhares-federal-university-of-goi-s/a2c-assignment/reports/A2C---CartPole-e-LunarLander---Gabriel-Palhares-Siqueira--VmlldzoxODAyOTE0MA==)
+
 ## Atividade DQN — Gabriel Palhares Siqueira
 
 Implementação individual dos três blocos em [algorithms/dqn.py](algorithms/dqn.py),
